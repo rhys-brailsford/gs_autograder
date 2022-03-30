@@ -406,6 +406,7 @@ def apply_late_penalty(meta_test, meta_data, cur_score):
         late_cap_percent = 0.75 - (math.ceil(lateness.days) * 0.25)
         late_capped_score = max_grade*late_cap_percent
         new_score = min(cur_score, late_capped_score)
+        new_score = max(new_score, 0)
         meta_test["output"] += "Late submission, "
         meta_test["output"] += f'max available marks capped to {late_cap_percent*100}%.\n'
         meta_test["output"] += f'Original grade of {cur_score} '
