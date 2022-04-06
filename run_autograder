@@ -1,90 +1,5 @@
 #!/usr/bin/python3.8
 
-# """
-# ============
-# Gradescope autograder script
-# Feb 2022
-
-# by Rhys Brailford (a1667692)
-# School of Computer Science
-# University of Adelaide
-# ============
-
-# To use:
-#     1. The script expects to be run in the gradescope environment and therefore you will need to
-#         emulate it. Check below for file structure requirements.
-#     2. Create a Question object for each question (e.g. "1-1", "1-2", "3-5")
-#         and store in list  "questions".
-#     3. Each question can use optional CompileTest objects that defined the required files for
-#         each compile test. If extra files are required that aren't used for compilation directly (header files,
-# 		plan.txt, solution.txt, etc.), a separate field in the Question class can be used: Question.extra_files.
-# 		These files get checked for FilesPresent checks but not used in compiling.
-# 	4. Points are broken into 3 types: FilesPresent (only gives points if all required files are present),
-# 		CompileTest for successful compilation, and functionality test defined by output files.
-#     5. If functionality tests are needed, specify the index which CompileTest in Question.compile_tests
-#         to use for compiling the test driver by using Question.tester_idx.
-#     6. Functionality tests are defined by output files in ./source/ directory.
-#         output-2-3-01 refers to Question 2-3, test 01. An output file is required per functionality test.
-# 	7. Functionality tests are usually defined using a test driver in ./source/ with the name "test-1-1.cpp"
-# 		for question 1-1. Cmd line arguments can be put in args-1-1-00 (again, for Q1-1, Test 00), stdin inputs
-# 		in input-1-1-00, and expected output in output-1-1-00.
-#     8. To run, simply call ./run_autograder in this script directory, no input needed as test information
-#         is either embedded in this script or in ./source/ or ./submission/ directories.
-#     9. Results are written to results/resuls.json which contains a score and a list of tests performed.
-#         Tests are consolidated by question (e.g. test will contain file/compile tests as well as functionality tests).
-
-# File Structure:
-# - ./run_autograder : This script
-# - ./submission : All submitted files
-# - ./source : All source files that get uploaded to gradescope with this script. Examples:
-#     - ./source/args-I-J-XY : <optional> contains cmd line arguments for Question I-J, Test XY
-#     - ./source/input-I-J-XY : <optional> contains input (via stdin redirection) for QI-J-XY as above
-#     - ./source/output-I-J-XY : <optional> contains expected output that gets diff'd for functionality test
-#     - ./source/test-I-J.cpp : <optional> contains test driver for Question I-J.
-# - ./submission_metadata.json : meta data for current submission,
-#     contains submitted time/duedate/max grade/previous submissions, etc.
-# - ./results/results.json : contains results file that gradescope reads for their output
-# - ./setup.sh : contains setup commands. Python module installations need to be done using:
-#             "python3.8 -m pip install X", where X is the module/command. This script depends on pytz.
-
-# Example Use case:
-
-# c_tests = []
-# # Create compile test for supplied main file. Successful compile gives 2 points.
-# # submitted_files contains list of required files submitted by student.
-# # provided_files contains list of required files supplied by testing harness.
-# main_compile = CompileTest(submitted_files = ["main-1-1.cpp", "function-1-1.cpp"],
-#                            provided_files = [], points = 2)
-# test_compile = CompileTest(submitted_files = ["function-1-1.cpp"],
-#                            provided_files = ["test-1-1.cpp"], points = 2)
-# c_tests = [main_compile, test_compile]
-
-# # question_id is needed not only for output, but for finding relevant testing files.
-# # max_points is sum of all marks for this question. This can't be inferred yet without
-# # searching source/ to see how many tests there are.
-# q = Question(question_id = "1-1", max_points = 10 compile_tests = c_tests
-#              file_points = 2, test_points = 2)
-# """
-
-# # Constants
-# sub_prefix = "submission/"
-# src_prefix = "source/"
-# test_program = "program.out"
-# program_output = "program.output"
-# program_error = "program.err"
-# test_timeout = 5                    # Timeout for all program executions (in seconds)
-
-# # ========================================================================
-# #              Set to true if assignment is a workshop.
-# # If true, overwrites final score to participation_grade regardless of tests
-# # for participation grade.
-# participation_only = False
-# participation_grade = 1
-# # ========================================================================
-
-
-
-
 # =================================================================
 #                   Question object creation
 # =================================================================
@@ -102,20 +17,28 @@
 #
 # questions.append(Question("FileTest", max_points=1, file_points=1, extra_files=["plan.txt", "solution-1-1.txt"]))
 
-import os
+# import os
 
-if os.path.exists("autograder_util.py") == False:
-    print("Required file autograder_util.py not found. Downloading...")
-    from urllib.request import urlopen
+# if os.path.exists("autograder_util.py") == False:
+#     print("Required file autograder_util.py not found. Downloading...")
+#     from urllib.request import urlopen
 
-    url = "https://raw.githubusercontent.com/rhys-brailsford/gs_autograder/main/autograder_util.py"
+#     url = "https://raw.githubusercontent.com/rhys-brailsford/gs_autograder/main/autograder_util.py"
 
-    response = urlopen(url)
-    with open("autograder_util.py", "w") as f: f.write(response.read().decode())
-
+#     response = urlopen(url)
+#     with open("autograder_util.py", "w") as f: f.write(response.read().decode())
 
 import json
 import autograder_util as ag
+
+
+# ========================================================================
+#              Set to true if assignment is a workshop.
+# If true, overwrites final score to participation_grade regardless of tests
+# for participation grade.
+participation_only = False
+participation_grade = 1
+# ========================================================================
 
 # List of questions objects
 questions = []
@@ -171,7 +94,7 @@ questions.append(q)
 
 
 
-result_json = ag.run_questions(questions)
+result_json = ag.run_questions(questions, participation_only, participation_grade)
 
 # close Gradescope results file
 with open('results/results.json', 'w') as file:

@@ -87,8 +87,8 @@ test_timeout = 5                    # Timeout for all program executions (in sec
 #              Set to true if assignment is a workshop.
 # If true, overwrites final score to participation_grade regardless of tests
 # for participation grade.
-participation_only = False
-participation_grade = 1
+#participation_only = False
+#participation_grade = 1
 # ========================================================================
 
 # utility functions
@@ -368,7 +368,7 @@ def record_test(result_json, test_score, max_score, name, feedback, visibility =
     except:
         print("\'tests\' key not found in result_json dictionary")
 
-def apply_cap(meta_test, meta_data, cur_score, participation_only = False):
+def apply_cap(meta_test, meta_data, cur_score, participation_only = False, participation_grade = 1):
     max_grade = float(meta_data['assignment']['total_points'])
     capped_score = cur_score
 
@@ -406,7 +406,6 @@ def apply_late_penalty(meta_test, meta_data, cur_score):
         late_cap_percent = 0.75 - (math.ceil(lateness.days) * 0.25)
         late_capped_score = max_grade*late_cap_percent
         new_score = min(cur_score, late_capped_score)
-        new_score = max(new_score, 0)
         meta_test["output"] += "Late submission, "
         meta_test["output"] += f'max available marks capped to {late_cap_percent*100}%.\n'
         meta_test["output"] += f'Original grade of {cur_score} '
@@ -438,7 +437,7 @@ def check_previous(meta_test, meta_data, cur_score):
         meta_test["output"] += f'Better submission from time: {best_date} (Adelaide time)\n'
     return best_score
 
-def run_questions(questions):
+def run_questions(questions, participation_only = False, participation_grade = 1):
     meta_data = {}
     try:
         md = open('submission_metadata.json')
@@ -544,7 +543,7 @@ def run_questions(questions):
     for test in result_json['tests']:
         total_score += test['score']
 
-    total_score = apply_cap(meta_test, meta_data, total_score, participation_only)
+    total_score = apply_cap(meta_test, meta_data, total_score, participation_only, participation_grade)
 
     total_score = apply_late_penalty(meta_test, meta_data, total_score)
 

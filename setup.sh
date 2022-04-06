@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # install any software packages needed for running code or scripts on the
-# ubuntu Linux image.  
+# ubuntu Linux image.
 
 # these are examples, you only need to install the packages you actually need
 # if they aren't part of the default ubuntu.
@@ -19,3 +19,7 @@ apt-get install -y python3.8 python3.8-dev
 python3.8 -m pip install --upgrade pyyaml
 python3.8 -m pip install pytz
 
+# Download version-controlled utility file
+wget https://raw.githubusercontent.com/rhys-brailsford/gs_autograder/main/autograder_util.py
+
+mv autograder_util.py autograder/autograder_util.py
