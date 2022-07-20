@@ -262,7 +262,7 @@ def check_diff(qid, tid):
 
     # Construct argument string, combining all args and prefixing with '-'
     arg_str = f'-{"".join(diff_args)}'
-    cmd = ['diff', f'{arg_str}', 'file1', 'file2']
+    cmd = ['diff', f'{arg_str}', f'exp_out_file', 'program.output']
     diff = subprocess.run(cmd, capture_output=True, text=True, timeout=test_timeout)
 
     if diff.returncode == 0:
