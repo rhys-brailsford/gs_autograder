@@ -83,7 +83,7 @@ program_output = "program.output"
 program_error = "program.err"
 test_timeout = 5                    # Timeout for all program executions (in seconds)
 
-diff_args = ["-Z", "-B"]            # Ignore trailing whitespace & ignore blank lines
+diff_args = ["Z", "B"]              # Ignore trailing whitespace & ignore blank lines
 
 # ========================================================================
 #              Set to true if assignment is a workshop.
@@ -260,7 +260,9 @@ def check_diff(qid, tid):
         print(err)
         return err
 
-    cmd = ['diff', " ".join(diff_args), f'{exp_out_file}', 'program.output']
+    # Construct argument string, combining all args and prefixing with '-'
+    arg_str = f'-{"".join(diff_args)}'
+    cmd = ['diff', f'{arg_str}', 'file1', 'file2']
     diff = subprocess.run(cmd, capture_output=True, text=True, timeout=test_timeout)
 
     if diff.returncode == 0:
