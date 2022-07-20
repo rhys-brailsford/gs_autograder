@@ -83,6 +83,8 @@ program_output = "program.output"
 program_error = "program.err"
 test_timeout = 5                    # Timeout for all program executions (in seconds)
 
+diff_args = ["-Z", "-B"]            # Ignore trailing whitespace & ignore blank lines
+
 # ========================================================================
 #              Set to true if assignment is a workshop.
 # If true, overwrites final score to participation_grade regardless of tests
@@ -258,7 +260,7 @@ def check_diff(qid, tid):
         print(err)
         return err
 
-    cmd = ['diff', f'{exp_out_file}', 'program.output']
+    cmd = ['diff', " ".join(diff_args), f'{exp_out_file}', 'program.output']
     diff = subprocess.run(cmd, capture_output=True, text=True, timeout=test_timeout)
 
     if diff.returncode == 0:
